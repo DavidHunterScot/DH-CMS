@@ -224,7 +224,7 @@ function theme_register_script( String $id, String $path, String $ver = "" ) {
 /**
  * THEME OUTPUT SCRIPTS
  * 
- * Outputs a list of HTML Link tags with URLs to all registered stylesheet files.
+ * Outputs a list of HTML Script tags with URLs to all registered JavaScript files.
  * This function will echo out the result.
  */
 function theme_output_scripts() {
