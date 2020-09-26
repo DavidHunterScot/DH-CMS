@@ -149,6 +149,8 @@ function theme_file_path( String $part, String $extension = "php" ) {
  * THEME REGISTER STYLE
  * 
  * Register a stylesheet for loading later. This will ensure only one of each stylesheet is loaded.
+ * Content-Type of file at path must be text/css.
+ * 
  * TODO: Add dependency support.
  * 
  * @param String $id The unique ID to register the style with, which also appears within the id attribute of the HTML link tag as "$id-css".
@@ -159,11 +161,15 @@ function theme_register_style( String $id, String $path, String $ver = "" ) {
 	global $theme_styles;
 	
 	if( is_array( $theme_styles ) && ! array_key_exists( $id, $theme_styles ) ) {
-		$theme_styles[ $id ][ 'id' ] = $id;
-		$theme_styles[ $id ][ 'path' ] = $path;
-		
-		if( $ver != "" )
-			$theme_styles[ $id ][ 'ver' ] = $ver;
+	    $headers = get_headers( $path, 1 );
+	    
+	    if( array_key_exists( 'Content-Type', $headers ) && 'text/css' == $headers['Content-Type'] ) {
+    		$theme_styles[ $id ][ 'id' ] = $id;
+	    	$theme_styles[ $id ][ 'path' ] = $path;
+	    	
+		    if( $ver != "" )
+			    $theme_styles[ $id ][ 'ver' ] = $ver;
+	    }
 	}
 }
 
