@@ -4,6 +4,7 @@ $themes_dir = __DIR__ . DS . '..' . DS . 'dh-content' . DS . 'themes';
 $available_themes = array();
 
 $theme_styles = array();
+$theme_scripts = array();
 
 $theme_supports = array();
 
@@ -192,6 +193,53 @@ function theme_output_styles() {
 }
 
 /**
+ * THEME REGISTER SCRIPT
+ * 
+ * Register a JavaScript file for loading later. This will ensure only one of each JavaScript file is loaded.
+ * Content-Type of file at path must be either text/javascript or application/javascript.
+ * 
+ * TODO: Add dependency support.
+ * 
+ * @param String $id The unique ID to register the script with, which also appears within the id attribute of the script tag as "$id-js".
+ * @param String $path The URL path to the JavaScript file to load.
+ * @param String $ver (Optional) A version number to append to the URL as a query string ?ver=12345.
+ */
+function theme_register_script( String $id, String $path, String $ver = "" ) {
+	global $theme_scripts;
+	
+	if( is_array( $theme_scripts ) && ! array_key_exists( $id, $theme_scripts ) ) {
+	    $headers = get_headers( $path, 1 );
+	    
+	    if( array_key_exists( 'Content-Type', $headers ) && ( 'text/javascript' == $headers['Content-Type'] || 'application/javascript' == $headers['Content-Type'] ) ) {
+    		$theme_scripts[ $id ][ 'id' ] = $id;
+	    	$theme_scripts[ $id ][ 'path' ] = $path;
+			$theme_scripts[ $id ][ 'type' ] = $headers['Content-Type'];
+	    	
+		    if( $ver != "" )
+			    $theme_scripts[ $id ][ 'ver' ] = $ver;
+	    }
+	}
+}
+
+/**
+ * THEME OUTPUT SCRIPTS
+ * 
+ * Outputs a list of HTML Link tags with URLs to all registered stylesheet files.
+ * This function will echo out the result.
+ */
+function theme_output_scripts() {
+	global $theme_scripts;
+	
+	if( is_array( $theme_scripts ) && count( $theme_scripts ) > 0 ) {
+		foreach( $theme_scripts as $theme_script ) {
+			if( isset( $theme_script['path'] ) && isset( $theme_script['id'] ) ) {
+				echo "\n<script type=\"" . $theme_script['type'] . "\" src=\"" . $theme_script['path'] . ( isset( $theme_script['ver'] ) ? "?ver=" . $theme_script['ver'] : "" ) . "\" id=\"" . $theme_script['id'] . "-js\"></script>\n";
+			}
+		}
+	}
+}
+
+/**
  * THEME INITIALISATION
  * 
  * Initialises the current theme.
@@ -204,6 +252,7 @@ function theme_init() {
 	theme_do_supports();
 	
 	add_action( 'theme_head', 'theme_output_styles' );
+	add_action( 'theme_body_close', 'theme_output_scripts' );
 	
 	theme_load_part( 'index' );
 }

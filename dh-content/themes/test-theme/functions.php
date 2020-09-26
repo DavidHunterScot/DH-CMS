@@ -8,6 +8,13 @@ function testtheme_styles() {
 add_action( 'theme_head', 'testtheme_styles' );
 
 
+function testtheme_scripts() {
+	theme_register_script( 'test', theme_url( 'test.js' ), filemtime( theme_file_path( 'test', 'js' ) ) );
+}
+
+add_action( 'theme_body_close', 'testtheme_scripts' );
+
+
 function testtheme_body_open() {
 	echo "<h1>" . config( 'name' ) . "</h1>";
 }
