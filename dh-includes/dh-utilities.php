@@ -55,7 +55,7 @@ function url( String $path = "" ) {
 	
 	$url = config( 'url' );
 	
-	return substr( $config, -1 ) == "/" ? $url . $path : $url . "/" . $path;
+	return substr( $url, -1 ) == "/" ? $url . $path : $url . "/" . $path;
 }
 
 /**
@@ -90,3 +90,4 @@ function is_ssl() {
 function scheme() {
     return is_ssl() ? "https://" : "http://";
 }
+
