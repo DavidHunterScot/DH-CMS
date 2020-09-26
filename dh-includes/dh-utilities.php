@@ -50,10 +50,15 @@ function charset() {
  * @return String The full generated URL.
  */
 function url( String $path = "" ) {
+	$url = config( 'url' );
+	
+	//if( substr( $url, 0, 16 ) == "http://127.0.0.1" )
+		//$url = substr( $url, 16 );
+	
 	if( substr( $path, 0, 1 ) == "/" )
 		$path = substr( $path, 1 );
 	
-	return substr( config( 'url' ), -1 ) == "/" ? config( 'url' ) . $path : config( 'url' ) . "/" . $path;
+	return substr( $url, -1 ) == "/" ? $url . $path : $url . "/" . $path;
 }
 
 /**
@@ -88,4 +93,3 @@ function is_ssl() {
 function scheme() {
     return is_ssl() ? "https://" : "http://";
 }
-
