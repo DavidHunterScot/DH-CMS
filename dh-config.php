@@ -5,5 +5,5 @@ $config = array(
 	'theme' => 'test-theme',
 	'lang' => 'en-GB',
 	'charset' => 'UTF-8',
-	'url' => 'https://' . $_SERVER['HTTP_HOST']
+	'url' => 'http' . ( isset( $_SERVER['HTTPS'] ) ? "s" : "" ) . '://' . $_SERVER['HTTP_HOST']
 );
