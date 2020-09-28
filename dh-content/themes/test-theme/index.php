@@ -7,10 +7,10 @@
 	</head>
 	
 	<body>
-		<?php theme_body_open(); ?>
+		<?php theme_body_top(); ?>
 		
 		<p>This is the index file of <?php echo theme( 'name' ); ?> by <?php echo theme( 'author' ); ?>.</p>
 		
-		<?php theme_body_close(); ?>
+		<?php theme_body_bottom(); ?>
 	</body>
 </html>

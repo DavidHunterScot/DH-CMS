@@ -282,18 +282,40 @@ function theme_head() {
  * THEME BODY OPEN
  * 
  * Perform the "theme_body_open" action.
+ * Perform the "theme_body_top" action.
  */
 function theme_body_open() {
 	do_action( 'theme_body_open' );
+	do_action( 'theme_body_top' );
+}
+
+/**
+ * THEME BODY TOP
+ * 
+ * Alias of theme_body_open().
+ */
+function theme_body_top() {
+	theme_body_open();
 }
 
 /**
  * THEME BODY CLOSE
  * 
  * Perform the "theme_body_close" action.
+ * Perform the "theme_body_bottom" action.
  */
 function theme_body_close() {
 	do_action( 'theme_body_close' );
+	do_action( 'theme_body_bottom' );
+}
+
+/**
+ * THEME BODY_BOTTOM
+ * 
+ * Alias of theme_body_close().
+ */
+function theme_body_bottom() {
+	theme_body_close();
 }
 
 /**
