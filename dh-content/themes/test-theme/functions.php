@@ -28,6 +28,7 @@ function testtheme_body_close() {
 
 add_action( 'theme_body_close', 'testtheme_body_close' );
 
+remove_action( 'theme_head', 'theme_meta_generator' );
 remove_action( 'theme_body_close', 'theme_attribution' );
 
 

@@ -245,6 +245,7 @@ function theme_output_scripts() {
  * Initialises the current theme.
  */
 function theme_init() {
+	add_action( 'theme_head', 'theme_meta_generator' );
 	add_action( 'theme_body_close', 'theme_attribution' );
 	
 	theme_load_part( 'functions' );
@@ -255,6 +256,15 @@ function theme_init() {
 	add_action( 'theme_body_close', 'theme_output_scripts' );
 	
 	theme_load_part( 'index' );
+}
+
+/**
+ * THEME META GENERATOR
+ * 
+ * Outputs a meta generator tag with DH-CMS info.
+ */
+function theme_meta_generator() {
+	echo "\n<meta name=\"generator\" content=\"DH-CMS\">\n";
 }
 
 /**
