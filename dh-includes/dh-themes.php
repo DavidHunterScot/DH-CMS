@@ -8,6 +8,8 @@ $theme_scripts = array();
 
 $theme_supports = array();
 
+$error_404 = false;
+
 /**
  * GET AVAILABLE THEMES
  * 
@@ -255,7 +257,23 @@ function theme_init() {
 	add_action( 'theme_head', 'theme_output_styles' );
 	add_action( 'theme_body_close', 'theme_output_scripts' );
 	
-	theme_load_part( 'index' );
+	$request = substr( $_SERVER['REQUEST_URI'], 1 );
+	$requested_path = theme_file_path( $request );
+
+	if( '/' != $_SERVER['REQUEST_URI'] && $requested_path ) {
+		theme_load_part( $request );
+	} else {
+		if( '/' != $_SERVER['REQUEST_URI'] && ! $requested_path ) {
+			global $error_404;
+			$error_404 = true;
+			header("HTTP/1.0 404 Not Found");
+		}
+
+		if( theme_file_path( '404' ) && is_error_404() )
+			theme_load_part( '404' );
+		else
+			theme_load_part( 'index' );
+	}
 }
 
 /**
@@ -406,4 +424,29 @@ function theme_do_supports() {
             add_action( 'theme_head', 'theme_title_tag' );
         }
     }
+}
+
+/**
+ * IS ERROR 404
+ * 
+ * Is the current request resulting in a 404 Not Found error?
+ * 
+ * @return boolean TRUE or FALSE indication of 404 error.
+ */
+function is_error_404() {
+	global $error_404;
+	return $error_404;
+}
+
+/**
+ * IS NOT FOUND
+ * 
+ * Is the current request resulting in a 404 Not Found error?
+ * 
+ * Alias of is_error_404().
+ * 
+ * @return boolean TRUE or FALSE indication of 404 error.
+ */
+function is_not_found() {
+	return is_error_404();
 }
