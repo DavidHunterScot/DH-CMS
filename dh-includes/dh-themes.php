@@ -276,7 +276,7 @@ function theme_meta_generator() {
  * remove_action( 'theme_body_close', 'theme_attribution' );
  */
 function theme_attribution() {
-	echo '<p style="font-family: serif; margin-top: 30px;">Proudly powered by DH-CMS.</p>';
+	echo "<p style=\"padding: 20px; text-align: center; font-size: 12px;\">Proudly powered by DH-CMS.</p>\n";
 }
 
 /**
