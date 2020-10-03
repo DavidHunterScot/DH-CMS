@@ -257,13 +257,14 @@ function theme_init() {
 	add_action( 'theme_head', 'theme_output_styles' );
 	add_action( 'theme_body_close', 'theme_output_scripts' );
 	
-	$request = substr( $_SERVER['REQUEST_URI'], 1 );
+	$path = isset( $_GET['path'] ) ? $_GET['path'] : "/";
+	$request = substr( $path, 1 );
 	$requested_path = theme_file_path( $request );
 
-	if( '/' != $_SERVER['REQUEST_URI'] && $requested_path ) {
+	if( '/' != $path && $requested_path ) {
 		theme_load_part( $request );
 	} else {
-		if( '/' != $_SERVER['REQUEST_URI'] && ! $requested_path ) {
+		if( '/' != $path && ! $requested_path ) {
 			global $error_404;
 			$error_404 = true;
 			header("HTTP/1.0 404 Not Found");
