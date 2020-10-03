@@ -10,6 +10,8 @@ $theme_supports = array();
 
 $error_404 = false;
 
+$request_path = "";
+
 /**
  * GET AVAILABLE THEMES
  * 
@@ -259,6 +261,10 @@ function theme_init() {
 	
 	$path = isset( $_GET['path'] ) ? $_GET['path'] : "/";
 	$request = substr( $path, 1 );
+	
+	global $request_path;
+	$request_path = $request;
+
 	$requested_path = theme_file_path( $request );
 
 	if( '/' != $path && $requested_path ) {
@@ -396,12 +402,43 @@ function theme_stylesheet_url() {
 }
 
 /**
+ * THEME GENERATE PAGE TITLE
+ * 
+ * Generates and returns a page title based on the requested path and optionally append the name in config.
+ * 
+ * @param String $landing_page_title (Optional) A title for the home/landing page of the site/app.
+ * @param bool $append_config_name (Optional) Whether to automatically append the name as defined in config.
+ * @return String The generated page title.
+ */
+function theme_generate_page_title( String $landing_page_title = "", bool $append_config_name = false ) {
+	global $request_path;
+
+	$request_path = str_replace( [ '-', '_', '/' ], [ ' ', ' ', ' :: ' ], $request_path );
+
+	$page_title = "404 Not Found" . ( $append_config_name ? " :: " . config( "name" ) : "" );
+
+	if( ! is_not_found() && "" != $request_path ) {
+		$page_title = $request_path . ( $append_config_name ? " :: " . config( "name" ) : "" );
+	}
+
+	if( ! is_not_found() && "" == $request_path ) {
+		if( $landing_page_title ) {
+			$page_title = $landing_page_title . ( $append_config_name ? " :: " . config( "name" ) : "" );
+		} else {
+			$page_title = config( "name" );
+		}
+	}
+
+	return ucwords( $page_title );
+}
+
+/**
  * THEME TITLE TAG
  * 
  * Echos HTML title tags with the site name as defined in config file as "name".
  */
 function theme_title_tag() {
-	echo "<title>" . config( 'name' ) . "</title>";
+	echo "<title>" . theme_generate_page_title( "", true ) . "</title>";
 }
 
 /**
