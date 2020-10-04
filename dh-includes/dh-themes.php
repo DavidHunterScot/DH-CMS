@@ -8,6 +8,8 @@ $theme_scripts = array();
 
 $theme_supports = array();
 
+$theme_body_classes = array();
+
 $error_404 = false;
 
 $request_path = "";
@@ -462,6 +464,51 @@ function theme_do_supports() {
             add_action( 'theme_head', 'theme_title_tag' );
         }
     }
+}
+
+/**
+ * THEME ADD BODY CLASS
+ * 
+ * Adds a body class to be loaded into the theme body tag.
+ * 
+ * @param String $body_class The class to add. Multiple classes can be provided separated by a space.
+ */
+function theme_add_body_class( String $body_class ) {
+	global $theme_body_classes;
+
+	if( $body_class ) {
+		$body_class = explode( " ", $body_class );
+
+		foreach( $body_class as $bc ) {
+			$theme_body_classes[ $bc ] = $bc;
+		}
+	}
+}
+
+/**
+ * THEME BODY CLASS
+ * 
+ * Performs the theme_body_class action to load in any class names for use in the body tag.
+ * 
+ * Returns the list of classes as a space separeted string.
+ * An HTML class attribute will also be returned unless the optional string is provided.
+ * 
+ * An empty string will be provided if class list is empty.
+ * 
+ * @param String $raw_outout (Optional) To be provided only if wishing raw output.
+ * @return String HTML class attribute prefixed by space with space separated class list, or raw space-separated class list, or empty string.
+ */
+function theme_body_class( String $raw_output = "" ) {
+	do_action( "theme_body_class" );
+
+	global $theme_body_classes;
+
+	$list = join( " ", $theme_body_classes );
+
+	if( $list )
+		return $raw_output ? $list : " class=\"" . $list . "\"";
+	else
+		return "";
 }
 
 /**

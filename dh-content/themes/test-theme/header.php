@@ -6,7 +6,7 @@
 		<?php theme_head(); ?>
 	</head>
 	
-	<body>
+	<body<?php echo theme_body_class(); ?>>
 		<?php theme_body_top(); ?>
 
 		<h1><?php echo config( 'name' ); ?></h1>

@@ -20,3 +20,9 @@ function testtheme_scripts() {
 
 add_action( 'theme_body_close', 'testtheme_scripts' );
 
+
+function testtheme_body_class() {
+	theme_add_body_class( 'testtheme_body_class' );
+}
+
+add_action( 'theme_body_class', 'testtheme_body_class' );
