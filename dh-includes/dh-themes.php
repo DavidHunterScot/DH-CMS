@@ -3,6 +3,8 @@
 $themes_dir = __DIR__ . DS . '..' . DS . 'dh-content' . DS . 'themes';
 $available_themes = array();
 
+$theme_info = array();
+
 $theme_styles = array();
 $theme_scripts = array();
 
@@ -65,7 +67,7 @@ function theme_exists( String $theme ) {
 }
 
 /**
- * THEME INFO
+ * THEME INFO (ORIGINAL)
  * 
  * Fetches info about a theme based on the provided key and matching it against
  * the comment at the top of theme.css file of theme.
@@ -74,7 +76,7 @@ function theme_exists( String $theme ) {
  * @param String $theme (Optional) The directory name for the root of the theme. Defaults to current theme.
  * @return String The value associated with the key if found. Silently fails with empty string.
  */
-function theme( String $key, String $theme = "" ) {
+function theme_info( String $key, String $theme = "" ) {
 	if( "" == $theme )
     	$theme = config( 'theme' );
     
@@ -110,6 +112,83 @@ function theme( String $key, String $theme = "" ) {
 				if( $info_key == $key )
 					return $info_value;
 			}
+		}
+	}
+	
+	return "";
+}
+
+/**
+ * THEME INFO
+ * 
+ * Fetches info about a theme based on the provided key and matching it against
+ * the comment at the top of theme.css file of theme.
+ * 
+ * Function will read each line at a time and will stop reading when reached end of comment,
+ * or if first line is not the start of a comment.
+ * 
+ * Theme info will be cached to an array upon first call, then pull from array on future calls.
+ * 
+ * @param String $key The key as a lowercase hyphen-separated string.
+ * @param String $theme (Optional) The directory name for the root of the theme. Defaults to current theme.
+ * @return String The value associated with the key if found. Silently fails with empty string.
+ */
+function theme( String $key, String $theme = "" ) {
+	if( "" == $theme )
+    	$theme = config( 'theme' );
+    
+    $key = str_replace( "-", " ", $key );
+    $key = ucwords( $key );
+
+    global $theme_info;
+    if( array_key_exists( $theme, $theme_info ) ) {
+    	if( is_array( $theme_info[ $theme ] ) && array_key_exists( $key, $theme_info[ $theme ] ) && $theme_info[ $theme ][ $key ] ) {
+    		return $theme_info[ $theme ][ $key ];
+    	}
+    	return "";
+    }
+	
+	global $themes_dir;
+
+	$info_loaded = false;
+	
+	if( theme_exists( $theme ) ) {
+		try {
+			$file = new SplFileObject( $themes_dir . DS . $theme . DS . 'theme.css' );
+			$line_number = 1;
+
+			$is_info_comment = false;
+			$read_file = true;
+
+			while ( ! $file->eof() && $read_file ) {
+				$line = trim( $file->fgets() );
+				$info_loaded = true;
+
+				if( 1 == $line_number && ( "/*" == $line || "/**" == $line ) ) {
+					$is_info_comment = true;
+					continue;
+				}
+
+				if( $is_info_comment && ( "*/" == $line || "**/" == $line ) ) {
+					$is_info_comment = false;
+					$read_file = false;
+					continue;
+				}
+
+				if( $is_info_comment && strpos( $line, ': ' ) > 0 ) {
+					$info_key = substr( $line, 0, strpos( $line, ': ' ) );
+					$info_value = substr( $line, strpos( $line, ': ' ) + 2 );
+					
+					$theme_info[ $theme ][ $info_key ] = $info_value;
+				}
+
+				$line_number++;
+			}
+
+			if( $info_loaded )
+				return theme( $key, $theme );
+		} catch( Exception $ex ) {
+			error_log( "dh-themes.php theme() error: unable to read from theme.css file." );
 		}
 	}
 	
