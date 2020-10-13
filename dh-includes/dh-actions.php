@@ -8,7 +8,7 @@ $actions = array();
  * Prepares an action to be performed.
  * 
  * @param String $name The name of the action to add.
- * @param String $function A callback for the action to perform.
+ * @param String $function A callback function for the action to perform.
  */
 function add_action( String $name, String $function ) {
 	global $actions;
@@ -39,10 +39,10 @@ function do_action( String $name ) {
 /**
  * ACTION EXISTS
  * 
- * Determine if an action exists based on the name and the callback function.
+ * Determine if an action exists based on the name and string as a callback function.
  * 
  * @param String $name The name of the action to check.
- * @param callback $function (Optional) The callback function to check or blank to check if any exists.
+ * @param String $function (Optional) The callback function to check or blank to check if any exists.
  * @return boolean A TRUE or FALSE indication of existence.
  */
 function action_exists( String $name, String $function = "" ) {
