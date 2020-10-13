@@ -8,12 +8,13 @@ $actions = array();
  * Prepares an action to be performed.
  * 
  * @param String $name The name of the action to add.
- * @param callable $function A callback for the action to perform.
+ * @param String $function A callback for the action to perform.
  */
-function add_action( String $name, callable $function ) {
+function add_action( String $name, String $function ) {
 	global $actions;
 	
-	$actions[ $name ][] = $function;
+	if( function_exists( $function ) && is_callable( $function ) )
+		$actions[ $name ][] = $function;
 }
 
 /**
@@ -28,7 +29,7 @@ function do_action( String $name ) {
 	
 	if( action_exists( $name ) ) {
 		foreach( $actions[ $name ] as $action ) {
-			if( is_callable( $action ) ) {
+			if( function_exists( $action ) && is_callable( $action ) ) {
 				call_user_func( $action );
 			}
 		}
@@ -44,17 +45,17 @@ function do_action( String $name ) {
  * @param callback $function (Optional) The callback function to check or blank to check if any exists.
  * @return boolean A TRUE or FALSE indication of existence.
  */
-function action_exists( String $name, callable $function = null ) {
+function action_exists( String $name, String $function = "" ) {
 	global $actions;
 	
 	if( array_key_exists( $name, $actions ) ) {
-		if( is_array( $actions[ $name ] ) && count( $actions[ $name ] ) > 0 && $function != null ) {
+		if( is_array( $actions[ $name ] ) && count( $actions[ $name ] ) > 0 && $function != "" ) {
 			foreach( $actions[ $name ] as $action ) {
 				if( $action == $function ) {
 					return true;
 				}
 			}
-		} elseif( $function == null ) {
+		} elseif( $function == "" ) {
 			return true;
 		}
 	}
@@ -70,7 +71,7 @@ function action_exists( String $name, callable $function = null ) {
  * @param String $name The name of the action to remove.
  * @param String $function (Optional) The callback function to remove from the action or blank for all.
  */
-function remove_action( String $name, callable $function = null ) {
+function remove_action( String $name, String $function = "" ) {
 	global $actions;
 	
 	if( action_exists( $name, $function ) ) {
