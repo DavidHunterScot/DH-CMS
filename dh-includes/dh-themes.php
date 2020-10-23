@@ -295,16 +295,18 @@ function theme_register_script( String $id, String $path, String $ver = "" ) {
 	global $theme_scripts;
 	
 	if( is_array( $theme_scripts ) && ! array_key_exists( $id, $theme_scripts ) ) {
-	    $headers = get_headers( $path, 1 );
-	    
-	    if( array_key_exists( 'Content-Type', $headers ) && ( 'text/javascript' == $headers['Content-Type'] || 'application/javascript' == $headers['Content-Type'] ) ) {
-    		$theme_scripts[ $id ][ 'id' ] = $id;
-	    	$theme_scripts[ $id ][ 'path' ] = $path;
-			$theme_scripts[ $id ][ 'type' ] = $headers['Content-Type'];
-	    	
-		    if( $ver != "" )
-			    $theme_scripts[ $id ][ 'ver' ] = $ver;
-	    }
+	    if( gethostbyaddr( parse_url( $path, PHP_URL_HOST ) ) ) {
+			$headers = get_headers( $path, 1 );
+			
+			if( array_key_exists( 'Content-Type', $headers ) && ( 'text/javascript' == $headers['Content-Type'] || 'application/javascript' == $headers['Content-Type'] ) ) {
+				$theme_scripts[ $id ][ 'id' ] = $id;
+				$theme_scripts[ $id ][ 'path' ] = $path;
+				$theme_scripts[ $id ][ 'type' ] = $headers['Content-Type'];
+				
+				if( $ver != "" )
+					$theme_scripts[ $id ][ 'ver' ] = $ver;
+			}
+		}
 	}
 }
 
