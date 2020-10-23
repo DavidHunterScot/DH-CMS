@@ -247,15 +247,17 @@ function theme_register_style( String $id, String $path, String $ver = "" ) {
 	global $theme_styles;
 	
 	if( is_array( $theme_styles ) && ! array_key_exists( $id, $theme_styles ) ) {
-	    $headers = get_headers( $path, 1 );
-	    
-	    if( array_key_exists( 'Content-Type', $headers ) && 'text/css' == $headers['Content-Type'] ) {
-    		$theme_styles[ $id ][ 'id' ] = $id;
-	    	$theme_styles[ $id ][ 'path' ] = $path;
-	    	
-		    if( $ver != "" )
-			    $theme_styles[ $id ][ 'ver' ] = $ver;
-	    }
+	    if( gethostbyaddr( parse_url( $path, PHP_URL_HOST ) ) ) {
+			$headers = get_headers( $path, 1 );
+			
+			if( array_key_exists( 'Content-Type', $headers ) && 'text/css' == $headers['Content-Type'] ) {
+				$theme_styles[ $id ][ 'id' ] = $id;
+				$theme_styles[ $id ][ 'path' ] = $path;
+				
+				if( $ver != "" )
+					$theme_styles[ $id ][ 'ver' ] = $ver;
+			}
+		}
 	}
 }
 
