@@ -247,7 +247,7 @@ function theme_register_style( String $id, String $path, String $ver = "" ) {
 	global $theme_styles;
 	
 	if( is_array( $theme_styles ) && ! array_key_exists( $id, $theme_styles ) ) {
-	    if( gethostbyaddr( parse_url( $path, PHP_URL_HOST ) ) ) {
+	    if( gethostbyname( parse_url( $path, PHP_URL_HOST ) ) ) {
 			$headers = get_headers( $path, 1 );
 			
 			if( array_key_exists( 'Content-Type', $headers ) && 'text/css' == $headers['Content-Type'] ) {
@@ -295,7 +295,7 @@ function theme_register_script( String $id, String $path, String $ver = "" ) {
 	global $theme_scripts;
 	
 	if( is_array( $theme_scripts ) && ! array_key_exists( $id, $theme_scripts ) ) {
-	    if( gethostbyaddr( parse_url( $path, PHP_URL_HOST ) ) ) {
+	    if( gethostbyname( parse_url( $path, PHP_URL_HOST ) ) ) {
 			$headers = get_headers( $path, 1 );
 			
 			if( array_key_exists( 'Content-Type', $headers ) && ( 'text/javascript' == $headers['Content-Type'] || 'application/javascript' == $headers['Content-Type'] ) ) {
